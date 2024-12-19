@@ -1,0 +1,60 @@
+let bg;
+let stars = [];
+let starColors = [];
+
+function setup() {
+  createCanvas(800, 600);
+  changeBGColor();
+  for (let i = 0; i < 10; i++) {
+    stars.push({
+      x: random(width),
+      y: random(height),
+      innerRadius: random(20, 40),
+      outerRadius: random(50, 80),
+      angle: random(TWO_PI),
+      speed: random(0.01, 0.05)
+    });
+    starColors.push(randomColor());
+  }
+  noStroke();
+}
+
+function draw() {
+  background(bg);
+  for (let i = 0; i < stars.length; i++) {
+    let star = stars[i];
+    fill(starColors[i]);
+    star.angle += star.speed;
+    let ir = star.innerRadius + sin(star.angle) * 5;
+    let or = star.outerRadius + cos(star.angle) * 5;
+    drawStar(star.x, star.y, ir, or);
+  }
+}
+
+function drawStar(mx, my, ir, or) {
+  let numberOfSides = 5;
+  let numberOfPoints = numberOfSides * 2;
+  let theta = 0;
+  let dt = TWO_PI / numberOfPoints;
+
+  beginShape();
+  for (let i = 0; i < numberOfPoints; i += 2) {
+    vertex(mx + ir * cos(theta + dt * i), my + ir * sin(theta + dt * i));
+    vertex(mx + or * cos(theta + dt * (i + 1)), my + or * sin(theta + dt * (i + 1)));
+  }
+  endShape(CLOSE);
+}
+
+function randomColor() {
+  return color(random(255), random(255), random(255));
+}
+
+function changeBGColor() {
+  bg = randomColor();
+}
+
+function keyPressed() {
+  if (key === 'b') {
+    changeBGColor();
+  }
+}
